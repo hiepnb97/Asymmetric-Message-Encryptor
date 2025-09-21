@@ -2,79 +2,124 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Trang B - Người nhận</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trang Người Nhận</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
   <style>
     body {
-      font-family: 'Segoe UI', Arial, sans-serif;
-      padding: 20px;
-      background: linear-gradient(135deg, #e8f5e9, #e3f2fd);
-    }
-    h2 { text-align: center; color: #333; }
-    textarea, input {
-      width: 100%;
-      padding: 10px;
-      margin: 6px 0;
-      border-radius: 8px;
-      border: 1px solid #ccc;
+      background-color: #f8f9fa;
       font-size: 14px;
     }
-    button {
-      background: #28a745;
-      color: white;
-      padding: 10px 16px;
+    .card {
       border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-top: 8px;
-      transition: 0.2s;
-    }
-    button:hover { background: #1e7e34; }
-    .box {
-      background: white;
-      padding: 16px;
-      margin: 16px auto;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      max-width: 700px;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0,0,0,.05);
     }
     pre {
-      background: #f5f5f5;
-      padding: 10px;
+      background: #f8f9fa;
       border-radius: 6px;
-      overflow-x: auto;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-    }
-    .copy-btn {
-      background: #6c757d;
+      padding: 12px;
       font-size: 12px;
-      padding: 4px 8px;
-      border-radius: 6px;
-      float: right;
+      border: 1px solid #e9ecef;
+      margin: 0;
     }
-    .copy-btn:hover { background: #495057; }
-    .label { font-weight: bold; color: #444; }
+    .btn {
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .btn-copy {
+      padding: 4px 8px;
+      font-size: 12px;
+    }
+    .form-control {
+      font-size: 14px;
+      border-radius: 8px;
+      padding: 8px 12px;
+    }
+    .form-label {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+    .time-note {
+      font-size: 12px;
+      color: #6c757d;
+      padding: 6px 10px;
+      background: #e9ecef;
+      border-radius: 6px;
+      margin-top: 8px;
+      display: inline-block;
+    }
   </style>
 </head>
 <body>
-  <h2>🔑 Trang B - Người nhận</h2>
+  <div class="container py-4" style="max-width: 680px;">
+    <div class="text-center mb-4">
+      <h4 class="mb-1">
+        <i class="bi bi-key text-success"></i>
+        Trang Người Nhận
+      </h4>
+      <p class="text-muted small">Tạo khóa và giải mã tin nhắn</p>
+    </div>
 
-  <div class="box">
-    <button onclick="generateKeys()">1. Tạo cặp khóa (Public & Private)</button>
-    <p class="label">🌍 Public Key (chia cho A): 
-      <button class="copy-btn" onclick="copyText('publicKey')">Copy</button>
-    </p>
-    <pre id="publicKey"></pre>
-    <p class="label">🔐 Private Key (giữ bí mật):</p>
-    <pre id="privateKey"></pre>
-  </div>
+    <div class="card mb-3">
+      <div class="card-body p-3">
+        <button onclick="generateKeys()" class="btn btn-success w-100">
+          <i class="bi bi-key-fill me-1"></i>
+          Tạo cặp khóa mới
+        </button>
 
-  <div class="box">
-    <p class="label">📥 Dán Ciphertext từ A:</p>
-    <textarea id="ciphertext" rows="5"></textarea>
-    <button onclick="decryptMessage()">Giải mã bằng Private Key</button>
-    <p class="label">📖 Kết quả sau giải mã:</p>
-    <pre id="decrypted"></pre>
+        <div class="mt-3">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <label class="form-label mb-0">
+              <i class="bi bi-globe me-1"></i>
+              Public Key (chia sẻ)
+            </label>
+            <button class="btn btn-outline-secondary btn-copy" onclick="copyText('publicKey')">
+              <i class="bi bi-clipboard me-1"></i>
+              Copy
+            </button>
+          </div>
+          <pre id="publicKey" class="mb-0"></pre>
+        </div>
+
+        <div class="mt-3">
+          <label class="form-label">
+            <i class="bi bi-lock-fill me-1"></i>
+            Private Key (giữ bí mật)
+          </label>
+          <pre id="privateKey"></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body p-3">
+        <div class="mb-3">
+          <label class="form-label">
+            <i class="bi bi-envelope me-1"></i>
+            Bản mã cần giải
+          </label>
+          <textarea id="ciphertext" class="form-control" rows="3" placeholder="Dán bản mã vào đây..."></textarea>
+        </div>
+
+        <button onclick="decryptMessage()" class="btn btn-primary w-100">
+          <i class="bi bi-unlock-fill me-1"></i>
+          Giải mã tin nhắn
+        </button>
+
+        <div class="mt-3">
+          <label class="form-label">
+            <i class="bi bi-chat-text me-1"></i>
+            Kết quả giải mã
+          </label>
+          <pre id="decrypted"></pre>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -94,14 +139,12 @@
       return bytes.buffer;
     }
 
-    // Lưu khóa vào localStorage
     function saveKeys(publicKeyB64, privateKeyB64) {
       localStorage.setItem('savedPublicKey', publicKeyB64);
       localStorage.setItem('savedPrivateKey', privateKeyB64);
       localStorage.setItem('keyGeneratedTime', new Date().toLocaleString());
     }
 
-    // Tải khóa từ localStorage
     async function loadSavedKeys() {
       const savedPublicKey = localStorage.getItem('savedPublicKey');
       const savedPrivateKey = localStorage.getItem('savedPrivateKey');
@@ -111,7 +154,6 @@
         document.getElementById("publicKey").textContent = savedPublicKey;
         document.getElementById("privateKey").textContent = savedPrivateKey;
 
-        // Import private key để sử dụng
         const privateKeyBuffer = base64ToArrayBuffer(savedPrivateKey);
         privateKey = await crypto.subtle.importKey(
           "pkcs8",
@@ -124,12 +166,9 @@
           ["decrypt"]
         );
 
-        // Hiển thị thông báo nhỏ về thời gian tạo khóa
         const timeNote = document.createElement('div');
-        timeNote.style.fontSize = '12px';
-        timeNote.style.color = '#666';
-        timeNote.style.marginTop = '5px';
-        timeNote.textContent = `⏰ Khóa được tạo lúc: ${keyGeneratedTime}`;
+        timeNote.className = 'time-note';
+        timeNote.innerHTML = `<i class="bi bi-clock me-1"></i>${keyGeneratedTime}`;
         document.getElementById("publicKey").parentNode.insertBefore(timeNote, document.getElementById("publicKey").nextSibling);
         
         return true;
@@ -138,7 +177,6 @@
     }
 
     async function generateKeys() {
-      // Kiểm tra xem đã có khóa cũ chưa
       if (localStorage.getItem('savedPublicKey')) {
         const confirmNew = confirm('⚠️ Bạn đã có một cặp khóa được lưu. Tạo cặp khóa mới sẽ xóa cặp khóa cũ.\n\nBạn có chắc chắn muốn tạo cặp khóa mới không?');
         if (!confirmNew) return;
@@ -165,34 +203,56 @@
       document.getElementById("privateKey").textContent = privateKeyB64;
 
       privateKey = keyPair.privateKey;
-
-      // Lưu khóa mới vào localStorage
       saveKeys(publicKeyB64, privateKeyB64);
+
+      // Xóa time note cũ nếu có
+      const oldTimeNote = document.querySelector('.time-note');
+      if (oldTimeNote) oldTimeNote.remove();
+      
+      // Tải lại để hiển thị time note mới
+      loadSavedKeys();
     }
 
-    // Tải khóa khi trang được load
-    window.addEventListener('load', loadSavedKeys);
-
     async function decryptMessage() {
-      const cipherBase64 = document.getElementById("ciphertext").value.trim();
-      const encrypted = base64ToArrayBuffer(cipherBase64);
+      try {
+        const cipherBase64 = document.getElementById("ciphertext").value.trim();
+        if (!cipherBase64) {
+          document.getElementById("decrypted").textContent = "⚠️ Vui lòng nhập bản mã để giải mã";
+          return;
+        }
 
-      const decrypted = await crypto.subtle.decrypt(
-        { name: "RSA-OAEP" },
-        privateKey,
-        encrypted
-      );
+        if (!privateKey) {
+          document.getElementById("decrypted").textContent = "⚠️ Vui lòng tạo hoặc tải khóa trước khi giải mã";
+          return;
+        }
 
-      const decoder = new TextDecoder();
-      document.getElementById("decrypted").textContent = decoder.decode(decrypted);
+        const encrypted = base64ToArrayBuffer(cipherBase64);
+        const decrypted = await crypto.subtle.decrypt(
+          { name: "RSA-OAEP" },
+          privateKey,
+          encrypted
+        );
+
+        const decoder = new TextDecoder();
+        document.getElementById("decrypted").textContent = decoder.decode(decrypted);
+      } catch (error) {
+        document.getElementById("decrypted").textContent = "❌ Lỗi giải mã: Bản mã không hợp lệ hoặc đã bị hỏng";
+      }
     }
 
     function copyText(elementId) {
       const text = document.getElementById(elementId).textContent;
       navigator.clipboard.writeText(text).then(() => {
-        alert("✅ Đã copy vào clipboard!");
+        const btn = event.target.closest('.btn-copy');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="bi bi-check2 me-1"></i>Đã copy';
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+        }, 1000);
       });
     }
+
+    window.addEventListener('load', loadSavedKeys);
   </script>
 </body>
 </html>

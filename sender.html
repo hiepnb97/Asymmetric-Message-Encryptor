@@ -2,76 +2,102 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Trang A - Người gửi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trang Người Gửi</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
   <style>
     body {
-      font-family: 'Segoe UI', Arial, sans-serif;
-      padding: 20px;
-      background: linear-gradient(135deg, #e0f7fa, #fce4ec);
-    }
-    h2 { text-align: center; color: #333; }
-    textarea, input {
-      width: 100%;
-      padding: 10px;
-      margin: 6px 0;
-      border-radius: 8px;
-      border: 1px solid #ccc;
+      background-color: #f8f9fa;
       font-size: 14px;
     }
-    button {
-      background: #007bff;
-      color: white;
-      padding: 10px 16px;
+    .card {
       border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-top: 8px;
-      transition: 0.2s;
-    }
-    button:hover { background: #0056b3; }
-    .box {
-      background: white;
-      padding: 16px;
-      margin: 16px auto;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      max-width: 700px;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0,0,0,.05);
     }
     pre {
-      background: #f5f5f5;
-      padding: 10px;
+      background: #f8f9fa;
       border-radius: 6px;
-      overflow-x: auto;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-    }
-    .copy-btn {
-      background: #6c757d;
+      padding: 12px;
       font-size: 12px;
-      padding: 4px 8px;
-      border-radius: 6px;
-      float: right;
+      border: 1px solid #e9ecef;
+      margin: 0;
     }
-    .copy-btn:hover { background: #495057; }
-    .label { font-weight: bold; color: #444; }
+    .btn {
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .btn-copy {
+      padding: 4px 8px;
+      font-size: 12px;
+    }
+    .form-control {
+      font-size: 14px;
+      border-radius: 8px;
+      padding: 8px 12px;
+    }
+    .form-label {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
   </style>
 </head>
 <body>
-  <h2>🔑 Trang A - Người gửi</h2>
+  <div class="container py-4" style="max-width: 680px;">
+    <div class="text-center mb-4">
+      <h4 class="mb-1">
+        <i class="bi bi-envelope text-primary"></i>
+        Trang Người Gửi
+      </h4>
+      <p class="text-muted small">Mã hóa tin nhắn gửi đi</p>
+    </div>
 
-  <div class="box">
-    <p class="label">📥 Dán Public Key của B:</p>
-    <textarea id="publicKeyB" rows="5"></textarea>
-  </div>
+    <div class="card mb-3">
+      <div class="card-body p-3">
+        <div class="mb-3">
+          <label class="form-label">
+            <i class="bi bi-key me-1"></i>
+            Public Key của người nhận
+          </label>
+          <textarea id="publicKeyB" class="form-control" rows="3" placeholder="Dán Public Key vào đây..."></textarea>
+        </div>
+      </div>
+    </div>
 
-  <div class="box">
-    <p class="label">✉️ Tin nhắn của A:</p>
-    <textarea id="message" rows="3"></textarea>
-    <button onclick="encryptMessage()">Mã hóa bằng Public Key của B</button>
-    <p class="label">🔒 Bản mã (Ciphertext): 
-      <button class="copy-btn" onclick="copyText('cipher')">Copy</button>
-    </p>
-    <pre id="cipher"></pre>
+    <div class="card">
+      <div class="card-body p-3">
+        <div class="mb-3">
+          <label class="form-label">
+            <i class="bi bi-chat-text me-1"></i>
+            Tin nhắn cần gửi
+          </label>
+          <textarea id="message" class="form-control" rows="3" placeholder="Nhập tin nhắn..."></textarea>
+        </div>
+
+        <button onclick="encryptMessage()" class="btn btn-primary w-100">
+          <i class="bi bi-lock-fill me-1"></i>
+          Mã hóa tin nhắn
+        </button>
+
+        <div class="mt-3">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <label class="form-label mb-0">
+              <i class="bi bi-shield-lock me-1"></i>
+              Bản mã
+            </label>
+            <button class="btn btn-outline-secondary btn-copy" onclick="copyText('cipher')">
+              <i class="bi bi-clipboard me-1"></i>
+              Copy
+            </button>
+          </div>
+          <pre id="cipher"></pre>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -92,32 +118,52 @@
     }
 
     async function encryptMessage() {
-      const pubKeyB64 = document.getElementById("publicKeyB").value.trim();
-      const msg = document.getElementById("message").value;
-      const encoder = new TextEncoder();
+      try {
+        const pubKeyB64 = document.getElementById("publicKeyB").value.trim();
+        const msg = document.getElementById("message").value;
 
-      const keyBuffer = base64ToArrayBuffer(pubKeyB64);
-      publicKey = await crypto.subtle.importKey(
-        "spki",
-        keyBuffer,
-        { name: "RSA-OAEP", hash: "SHA-256" },
-        false,
-        ["encrypt"]
-      );
+        if (!pubKeyB64) {
+          document.getElementById("cipher").textContent = "⚠️ Vui lòng nhập Public Key";
+          return;
+        }
 
-      const encrypted = await crypto.subtle.encrypt(
-        { name: "RSA-OAEP" },
-        publicKey,
-        encoder.encode(msg)
-      );
+        if (!msg) {
+          document.getElementById("cipher").textContent = "⚠️ Vui lòng nhập tin nhắn";
+          return;
+        }
 
-      document.getElementById("cipher").textContent = arrayBufferToBase64(encrypted);
+        const encoder = new TextEncoder();
+        const keyBuffer = base64ToArrayBuffer(pubKeyB64);
+
+        publicKey = await crypto.subtle.importKey(
+          "spki",
+          keyBuffer,
+          { name: "RSA-OAEP", hash: "SHA-256" },
+          false,
+          ["encrypt"]
+        );
+
+        const encrypted = await crypto.subtle.encrypt(
+          { name: "RSA-OAEP" },
+          publicKey,
+          encoder.encode(msg)
+        );
+
+        document.getElementById("cipher").textContent = arrayBufferToBase64(encrypted);
+      } catch (error) {
+        document.getElementById("cipher").textContent = "❌ Lỗi mã hóa: Public Key không hợp lệ";
+      }
     }
 
     function copyText(elementId) {
       const text = document.getElementById(elementId).textContent;
       navigator.clipboard.writeText(text).then(() => {
-        alert("✅ Đã copy vào clipboard!");
+        const btn = event.target.closest('.btn-copy');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="bi bi-check2 me-1"></i>Đã copy';
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+        }, 1000);
       });
     }
   </script>
