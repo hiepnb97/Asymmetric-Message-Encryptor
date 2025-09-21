@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Trang B - Người nhận</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      padding: 20px;
+      background: linear-gradient(135deg, #e8f5e9, #e3f2fd);
+    }
+    h2 { text-align: center; color: #333; }
+    textarea, input {
+      width: 100%;
+      padding: 10px;
+      margin: 6px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+    button {
+      background: #28a745;
+      color: white;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: 0.2s;
+    }
+    button:hover { background: #1e7e34; }
+    .box {
+      background: white;
+      padding: 16px;
+      margin: 16px auto;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      max-width: 700px;
+    }
+    pre {
+      background: #f5f5f5;
+      padding: 10px;
+      border-radius: 6px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    .copy-btn {
+      background: #6c757d;
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      float: right;
+    }
+    .copy-btn:hover { background: #495057; }
+    .label { font-weight: bold; color: #444; }
+  </style>
+</head>
+<body>
+  <h2>🔑 Trang B - Người nhận</h2>
+
+  <div class="box">
+    <button onclick="generateKeys()">1. Tạo cặp khóa (Public & Private)</button>
+    <p class="label">🌍 Public Key (chia cho A): 
+      <button class="copy-btn" onclick="copyText('publicKey')">Copy</button>
+    </p>
+    <pre id="publicKey"></pre>
+    <p class="label">🔐 Private Key (giữ bí mật):</p>
+    <pre id="privateKey"></pre>
+  </div>
+
+  <div class="box">
+    <p class="label">📥 Dán Ciphertext từ A:</p>
+    <textarea id="ciphertext" rows="5"></textarea>
+    <button onclick="decryptMessage()">Giải mã bằng Private Key</button>
+    <p class="label">📖 Kết quả sau giải mã:</p>
+    <pre id="decrypted"></pre>
+  </div>
+
+  <script>
+    let privateKey;
+
+    function arrayBufferToBase64(buffer) {
+      let binary = '';
+      const bytes = new Uint8Array(buffer);
+      for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+      return btoa(binary);
+    }
+
+    function base64ToArrayBuffer(base64) {
+      const binary = atob(base64);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      return bytes.buffer;
+    }
+
+    async function generateKeys() {
+      const keyPair = await window.crypto.subtle.generateKey(
+        {
+          name: "RSA-OAEP",
+          modulusLength: 2048,
+          publicExponent: new Uint8Array([1, 0, 1]),
+          hash: "SHA-256",
+        },
+        true,
+        ["encrypt", "decrypt"]
+      );
+
+      const exportedPublic = await crypto.subtle.exportKey("spki", keyPair.publicKey);
+      const exportedPrivate = await crypto.subtle.exportKey("pkcs8", keyPair.privateKey);
+
+      document.getElementById("publicKey").textContent = arrayBufferToBase64(exportedPublic);
+      document.getElementById("privateKey").textContent = arrayBufferToBase64(exportedPrivate);
+
+      privateKey = keyPair.privateKey;
+    }
+
+    async function decryptMessage() {
+      const cipherBase64 = document.getElementById("ciphertext").value.trim();
+      const encrypted = base64ToArrayBuffer(cipherBase64);
+
+      const decrypted = await crypto.subtle.decrypt(
+        { name: "RSA-OAEP" },
+        privateKey,
+        encrypted
+      );
+
+      const decoder = new TextDecoder();
+      document.getElementById("decrypted").textContent = decoder.decode(decrypted);
+    }
+
+    function copyText(elementId) {
+      const text = document.getElementById(elementId).textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        alert("✅ Đã copy vào clipboard!");
+      });
+    }
+  </script>
+</body>
+</html>
