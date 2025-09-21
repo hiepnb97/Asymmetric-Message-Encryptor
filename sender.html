@@ -83,19 +83,24 @@
           Mã hóa tin nhắn
         </button>
 
-        <div class="mt-3">
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <label class="form-label mb-0">
-              <i class="bi bi-shield-lock me-1"></i>
-              Bản mã
-            </label>
-            <button class="btn btn-outline-secondary btn-copy" onclick="copyText('cipher')">
-              <i class="bi bi-clipboard me-1"></i>
-              Copy
-            </button>
+          <div class="mt-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <label class="form-label mb-0">
+                <i class="bi bi-shield-lock me-1"></i>
+                Bản mã
+              </label>
+              <button class="btn btn-outline-secondary btn-copy" onclick="copyText('cipher', event)">
+                <i class="bi bi-clipboard me-1"></i>
+                Copy
+              </button>
+            </div>
+            <div class="position-relative">
+              <pre id="cipher"></pre>
+              <div id="cipher-copied" class="position-absolute top-50 start-50 translate-middle bg-dark text-white px-3 py-2 rounded" style="display: none; z-index: 1000;">
+                <i class="bi bi-check2"></i> Đã copy
+              </div>
+            </div>
           </div>
-          <pre id="cipher"></pre>
-        </div>
       </div>
     </div>
   </div>
@@ -155,15 +160,29 @@
       }
     }
 
-    function copyText(elementId) {
+    function copyText(elementId, event) {
       const text = document.getElementById(elementId).textContent;
       navigator.clipboard.writeText(text).then(() => {
-        const btn = event.target.closest('.btn-copy');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="bi bi-check2 me-1"></i>Đã copy';
-        setTimeout(() => {
-          btn.innerHTML = originalText;
-        }, 1000);
+        // Handle button text change if clicked from a button
+        if (event) {
+          const btn = event.target.closest('.btn-copy');
+          if (btn) {
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="bi bi-check2 me-1"></i>Đã copy';
+            setTimeout(() => {
+              btn.innerHTML = originalText;
+            }, 1000);
+          }
+        }
+        
+        // Show popup notification
+        const popup = document.getElementById(elementId + '-copied');
+        if (popup) {
+          popup.style.display = 'block';
+          setTimeout(() => {
+            popup.style.display = 'none';
+          }, 1000);
+        }
       });
     }
   </script>
