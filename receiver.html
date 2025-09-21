@@ -210,11 +210,16 @@
         
         return true;
       }
-      return false;
+
+      // Nếu không có khóa, tự động tạo cặp khóa mới
+      document.getElementById("publicKey").textContent = "Đang tạo khóa mới...";
+      document.getElementById("privateKey").textContent = "Đang tạo khóa mới...";
+      await generateKeys(true);
+      return true;
     }
 
-    async function generateKeys() {
-      if (localStorage.getItem('savedPublicKey')) {
+    async function generateKeys(skipConfirm = false) {
+      if (!skipConfirm && localStorage.getItem('savedPublicKey')) {
         const confirmNew = confirm('⚠️ Bạn đã có một cặp khóa được lưu. Tạo cặp khóa mới sẽ xóa cặp khóa cũ.\n\nBạn có chắc chắn muốn tạo cặp khóa mới không?');
         if (!confirmNew) return;
       }
