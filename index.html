@@ -2,140 +2,105 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Hệ thống Mã hóa Tin nhắn Bất đối xứng</title>
+  <title>Hệ thống Gửi Tin Nhắn Bảo Mật</title>
   <style>
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
       line-height: 1.6;
-      margin: 0;
       padding: 20px;
-      background: linear-gradient(135deg, #f5f7fa, #e4e7eb);
-      color: #333;
-    }
-    .container {
+      background: #f0f2f5;
       max-width: 800px;
       margin: 0 auto;
+    }
+    .box {
       background: white;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    h1 {
-      color: #2c3e50;
-      text-align: center;
-      margin-bottom: 30px;
-    }
-    h2 {
-      color: #34495e;
-      margin-top: 25px;
-    }
-    .steps {
-      background: #f8f9fa;
       padding: 20px;
       border-radius: 10px;
-      margin: 20px 0;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    .step {
-      margin-bottom: 15px;
-      padding-left: 25px;
-      position: relative;
-    }
-    .step:before {
-      content: "→";
-      position: absolute;
-      left: 0;
-      color: #3498db;
+    h1 {
+      text-align: center;
+      color: #1a73e8;
     }
     .buttons {
       display: flex;
-      gap: 20px;
+      gap: 15px;
       justify-content: center;
-      margin-top: 30px;
+      margin: 30px 0;
     }
     .btn {
-      padding: 12px 24px;
+      padding: 15px 25px;
       border: none;
       border-radius: 8px;
       cursor: pointer;
       font-size: 16px;
-      font-weight: 600;
       text-decoration: none;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
-    .btn-sender {
-      background: #3498db;
       color: white;
+      font-weight: bold;
     }
-    .btn-receiver {
-      background: #2ecc71;
-      color: white;
+    .btn-blue {
+      background: #1a73e8;
     }
-    .security-note {
-      background: #fff3cd;
-      border-left: 4px solid #ffc107;
-      padding: 15px;
-      margin: 20px 0;
-      border-radius: 0 8px 8px 0;
+    .btn-green {
+      background: #34a853;
+    }
+    .steps {
+      font-size: 16px;
+    }
+    .step {
+      margin: 10px 0;
+      padding: 10px;
+      background: #f8f9fa;
+      border-radius: 5px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>🔐 Hệ thống Mã hóa Tin nhắn Bất đối xứng</h1>
-    
-    <h2>Giới thiệu</h2>
-    <p>
-      Đây là hệ thống mã hóa tin nhắn sử dụng phương pháp mã hóa bất đối xứng RSA-OAEP. 
-      Hệ thống cho phép hai người trao đổi tin nhắn một cách an toàn mà không cần chia sẻ khóa bí mật trước.
-    </p>
+  <h1>📱 Gửi Tin Nhắn Bảo Mật</h1>
 
-    <div class="security-note">
-      <strong>📝 Lưu ý bảo mật:</strong>
-      <ul>
-        <li>Private Key phải được giữ bí mật tuyệt đối</li>
-        <li>Chỉ chia sẻ Public Key cho người gửi tin nhắn</li>
-        <li>Mỗi người nên tạo cặp khóa mới cho mỗi phiên trao đổi tin nhắn</li>
-      </ul>
-    </div>
-
-    <h2>Cách Hoạt Động</h2>
-    <div class="steps">
-      <div class="step">
-        <strong>Bước 1:</strong> Người nhận (B) truy cập trang Receiver để tạo cặp khóa (Public Key & Private Key)
-      </div>
-      <div class="step">
-        <strong>Bước 2:</strong> Người nhận (B) gửi Public Key cho người gửi (A)
-      </div>
-      <div class="step">
-        <strong>Bước 3:</strong> Người gửi (A) truy cập trang Sender, nhập Public Key của B và tin nhắn cần gửi
-      </div>
-      <div class="step">
-        <strong>Bước 4:</strong> Hệ thống mã hóa tin nhắn bằng Public Key của B
-      </div>
-      <div class="step">
-        <strong>Bước 5:</strong> Người gửi (A) gửi bản mã (Ciphertext) cho người nhận (B)
-      </div>
-      <div class="step">
-        <strong>Bước 6:</strong> Người nhận (B) giải mã tin nhắn bằng Private Key của mình
-      </div>
-    </div>
-
-    <h2>Đặc điểm kỹ thuật</h2>
-    <ul>
-      <li>Sử dụng thuật toán RSA-OAEP với độ dài khóa 2048 bit</li>
-      <li>Hàm băm SHA-256 cho padding</li>
-      <li>Mã hóa hoàn toàn ở phía client (trình duyệt)</li>
-      <li>Không lưu trữ khóa hoặc dữ liệu trên server</li>
-    </ul>
-
+  <div class="box">
     <div class="buttons">
-      <a href="sender.html" target="_blank" class="btn btn-sender">🔒 Trang Người Gửi (A)</a>
-      <a href="receiver.html" target="_blank" class="btn btn-receiver">🔑 Trang Người Nhận (B)</a>
+      <a href="receiver.html" target="_blank" class="btn btn-green">👉 Bước 1: Trang Người Nhận</a>
+      <a href="sender.html" target="_blank" class="btn btn-blue">👉 Bước 2: Trang Người Gửi</a>
     </div>
+  </div>
+
+  <div class="box">
+    <div class="steps">
+      <h2>Cách sử dụng:</h2>
+      
+      <div class="step">
+        <strong>1. Người nhận:</strong><br>
+        - Bấm nút "Trang Người Nhận"<br>
+        - Bấm nút "Tạo cặp khóa"<br>
+        - Copy Public Key gửi cho người gửi
+      </div>
+
+      <div class="step">
+        <strong>2. Người gửi:</strong><br>
+        - Bấm nút "Trang Người Gửi"<br>
+        - Dán Public Key vào ô trên<br>
+        - Nhập tin nhắn vào ô dưới<br>
+        - Bấm nút "Mã hóa"<br>
+        - Copy bản mã gửi lại cho người nhận
+      </div>
+
+      <div class="step">
+        <strong>3. Người nhận đọc tin:</strong><br>
+        - Dán bản mã vào ô trên<br>
+        - Bấm "Giải mã"<br>
+        - Đọc tin nhắn ở ô kết quả
+      </div>
+    </div>
+  </div>
+
+  <div class="box">
+    <p><strong>⚠️ Lưu ý:</strong></p>
+    <ul>
+      <li>Chỉ chia sẻ Public Key, KHÔNG chia sẻ Private Key</li>
+      <li>Mỗi lần nhắn tin nên tạo cặp khóa mới để an toàn hơn</li>
+    </ul>
   </div>
 </body>
 </html>
