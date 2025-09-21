@@ -91,7 +91,13 @@
             <i class="bi bi-lock-fill me-1"></i>
             Private Key (giữ bí mật)
           </label>
-          <pre id="privateKey"></pre>
+          <textarea id="privateKey" class="form-control" rows="3" placeholder="Dán Private Key của bạn vào đây..."></textarea>
+          <div class="mt-2">
+            <button class="btn btn-outline-secondary btn-sm" onclick="importPrivateKey()">
+              <i class="bi bi-key me-1"></i>
+              Sửa Private Key
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -275,6 +281,39 @@
           }, 1000);
         }
       });
+    }
+
+    async function importPrivateKey() {
+      try {
+        const privateKeyB64 = document.getElementById("privateKey").value.trim();
+        if (!privateKeyB64) {
+          alert("⚠️ Vui lòng nhập Private Key");
+          return;
+        }
+
+        const privateKeyBuffer = base64ToArrayBuffer(privateKeyB64);
+        privateKey = await crypto.subtle.importKey(
+          "pkcs8",
+          privateKeyBuffer,
+          {
+            name: "RSA-OAEP",
+            hash: "SHA-256"
+          },
+          true,
+          ["decrypt"]
+        );
+
+        // Save the imported private key
+        const publicKeyB64 = document.getElementById("publicKey").textContent;
+        if (publicKeyB64) {
+          saveKeys(publicKeyB64, privateKeyB64);
+        }
+
+        alert("✅ Đã sửa Private Key thành công!");
+      } catch (error) {
+        alert("❌ Lỗi: Private Key không hợp lệ");
+        console.error(error);
+      }
     }
 
     window.addEventListener('load', loadSavedKeys);
