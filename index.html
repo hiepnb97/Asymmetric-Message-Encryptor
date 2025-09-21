@@ -127,10 +127,9 @@
                 Mã hóa mạnh mẽ
               </h6>
               <ul class="mb-0 ps-4" style="font-size: 13px;">
-                <li>Sử dụng RSA-OAEP với khóa 2048-bit</li>
-                <li>Hàm băm SHA-256 cho padding</li>
-                <li>Khóa công khai/riêng tư độc lập</li>
-                <li>Mã hóa bất đối xứng an toàn</li>
+                <li>Sử dụng RSA-OAEP với khóa 2048-bit - Độ dài khóa lớn giúp chống lại việc giải mã bằng vét cạn</li>
+                <li>Hàm băm SHA-256 cho padding - Tăng tính ngẫu nhiên, tránh các tấn công dựa trên mẫu</li>
+                <li>Mã hóa bất đối xứng an toàn - Giống như chiếc hộp có 2 chìa khóa: một chìa để khóa (public key) và một chìa để mở (private key). Người gửi chỉ có thể khóa tin nhắn, chỉ người nhận mới có chìa khóa để mở</li>
               </ul>
             </div>
           </div>
@@ -142,10 +141,10 @@
                 Bảo vệ dữ liệu
               </h6>
               <ul class="mb-0 ps-4" style="font-size: 13px;">
-                <li>Mã hóa hoàn toàn ở trình duyệt</li>
-                <li>Không gửi dữ liệu lên server</li>
-                <li>Không lưu khóa riêng tư online</li>
-                <li>Mã nguồn trên GitHub, có thể kiểm tra</li>
+                <li>Mã hóa hoàn toàn ở trình duyệt - Dữ liệu được xử lý cục bộ, không qua mạng</li>
+                <li>Không gửi dữ liệu lên server - Tin nhắn và khóa không bao giờ rời khỏi máy bạn</li>
+                <li>Không lưu khóa riêng tư online - Khóa riêng tư chỉ tồn tại trên máy người nhận</li>
+                <li>Mã nguồn trên GitHub - Mọi người có thể kiểm tra code để đảm bảo tính bảo mật</li>
               </ul>
             </div>
           </div>
