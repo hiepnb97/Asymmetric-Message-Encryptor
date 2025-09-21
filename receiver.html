@@ -94,7 +94,56 @@
       return bytes.buffer;
     }
 
+    // Lưu khóa vào localStorage
+    function saveKeys(publicKeyB64, privateKeyB64) {
+      localStorage.setItem('savedPublicKey', publicKeyB64);
+      localStorage.setItem('savedPrivateKey', privateKeyB64);
+      localStorage.setItem('keyGeneratedTime', new Date().toLocaleString());
+    }
+
+    // Tải khóa từ localStorage
+    async function loadSavedKeys() {
+      const savedPublicKey = localStorage.getItem('savedPublicKey');
+      const savedPrivateKey = localStorage.getItem('savedPrivateKey');
+      const keyGeneratedTime = localStorage.getItem('keyGeneratedTime');
+
+      if (savedPublicKey && savedPrivateKey) {
+        document.getElementById("publicKey").textContent = savedPublicKey;
+        document.getElementById("privateKey").textContent = savedPrivateKey;
+
+        // Import private key để sử dụng
+        const privateKeyBuffer = base64ToArrayBuffer(savedPrivateKey);
+        privateKey = await crypto.subtle.importKey(
+          "pkcs8",
+          privateKeyBuffer,
+          {
+            name: "RSA-OAEP",
+            hash: "SHA-256"
+          },
+          true,
+          ["decrypt"]
+        );
+
+        // Hiển thị thông báo nhỏ về thời gian tạo khóa
+        const timeNote = document.createElement('div');
+        timeNote.style.fontSize = '12px';
+        timeNote.style.color = '#666';
+        timeNote.style.marginTop = '5px';
+        timeNote.textContent = `⏰ Khóa được tạo lúc: ${keyGeneratedTime}`;
+        document.getElementById("publicKey").parentNode.insertBefore(timeNote, document.getElementById("publicKey").nextSibling);
+        
+        return true;
+      }
+      return false;
+    }
+
     async function generateKeys() {
+      // Kiểm tra xem đã có khóa cũ chưa
+      if (localStorage.getItem('savedPublicKey')) {
+        const confirmNew = confirm('⚠️ Bạn đã có một cặp khóa được lưu. Tạo cặp khóa mới sẽ xóa cặp khóa cũ.\n\nBạn có chắc chắn muốn tạo cặp khóa mới không?');
+        if (!confirmNew) return;
+      }
+
       const keyPair = await window.crypto.subtle.generateKey(
         {
           name: "RSA-OAEP",
@@ -109,11 +158,20 @@
       const exportedPublic = await crypto.subtle.exportKey("spki", keyPair.publicKey);
       const exportedPrivate = await crypto.subtle.exportKey("pkcs8", keyPair.privateKey);
 
-      document.getElementById("publicKey").textContent = arrayBufferToBase64(exportedPublic);
-      document.getElementById("privateKey").textContent = arrayBufferToBase64(exportedPrivate);
+      const publicKeyB64 = arrayBufferToBase64(exportedPublic);
+      const privateKeyB64 = arrayBufferToBase64(exportedPrivate);
+
+      document.getElementById("publicKey").textContent = publicKeyB64;
+      document.getElementById("privateKey").textContent = privateKeyB64;
 
       privateKey = keyPair.privateKey;
+
+      // Lưu khóa mới vào localStorage
+      saveKeys(publicKeyB64, privateKeyB64);
     }
+
+    // Tải khóa khi trang được load
+    window.addEventListener('load', loadSavedKeys);
 
     async function decryptMessage() {
       const cipherBase64 = document.getElementById("ciphertext").value.trim();
